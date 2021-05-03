@@ -2,6 +2,8 @@
 
 ![Time Travel Debugging in GoLand](https://ryan.software/images/docker-debugger/goland-time-travel.gif)
 
+- Notice how we can step backwards in time!
+
 See blog post at https://ryan.software/docker-debugger. Clone this repo and try out the Dockerfiles and VSCode.
 
 ### Dockerfiles
