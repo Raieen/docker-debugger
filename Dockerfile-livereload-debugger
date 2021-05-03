@@ -1,0 +1,19 @@
+# Builds and runs Hello World with live reloading and debugger
+# Build: docker build -t docker-debugger-livereload-debugger -f Dockerfile-livereload-debugger .
+# Run: docker run --rm --name docker-debugger-livereload-debugger -p 2345:2345 -it -v "$(pwd):/src/helloworld" docker-debugger-livereload-debugger
+FROM golang:1.16
+
+# Build helloworld
+WORKDIR /src/helloworld
+COPY . .
+
+# Install Node and Nodemon for live reloading
+RUN apt-get update && apt-get install -y nodejs && curl -L https://www.npmjs.com/install.sh | sh && npm install -g nodemon
+
+# Setup Delve (Go Debugger)
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+
+# Expose debugging port
+EXPOSE 2345
+
+ENTRYPOINT ["nodemon", "--exec", "dlv debug --headless -l=0.0.0.0:2345 --api-version=2", "-e", "go"]

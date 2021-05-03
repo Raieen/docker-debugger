@@ -1,0 +1,12 @@
+# Builds and runs Hello World with live reloading
+# Build: docker build -t docker-debugger-livereload -f Dockerfile-livereload .
+# Run: docker run --rm --name docker-debugger-livereload -it -v "$(pwd):/src/helloworld" docker-debugger-livereload
+FROM golang:1.16
+
+WORKDIR /src/helloworld
+COPY . .
+
+# Install Node and Nodemon for live reloading
+RUN apt-get update && apt-get install -y nodejs && curl -L https://www.npmjs.com/install.sh | sh && npm install -g nodemon
+
+ENTRYPOINT ["nodemon", "--exec", "go build -o helloworld . && ./helloworld", "-e", "go"]

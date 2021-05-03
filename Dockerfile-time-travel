@@ -1,0 +1,22 @@
+# Builds and runs Hello World with live reloading, debugger and time travel
+# Build: docker build -t docker-debugger-time-travel -f Dockerfile-time-travel .
+# Run: docker run --rm --name docker-debugger-time-travel -p 2345:2345 -it -v "$(pwd):/src/helloworld" --security-opt seccomp=unconfined docker-debugger-time-travel
+FROM golang:1.16
+
+# Build helloworld
+WORKDIR /src/helloworld
+COPY . .
+
+# Install Node and Nodemon for live reloading, rr for time travel debugging
+RUN apt-get update && apt-get install -y nodejs rr && curl -L https://www.npmjs.com/install.sh | sh && npm install -g nodemon
+
+# Setup Delve (Go Debugger)
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+
+# This port will be needed for debugging
+EXPOSE 2345
+
+RUN chmod +x rr-debug.sh
+CMD ["./rr-debug.sh"]
+
+ENTRYPOINT ["nodemon", "--exec", "./rr-debug.sh", "-e", "go"]

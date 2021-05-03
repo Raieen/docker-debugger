@@ -1,0 +1,9 @@
+# Basic Dockerfile that builds and runs Hello World.
+# Build: docker build -t docker-debugger-simple -f Dockerfile-simple .
+# Run: docker run --rm --name docker-debugger-simple -it docker-debugger-simple
+FROM golang:1.16
+
+WORKDIR /src/helloworld
+COPY . .
+RUN go build -o helloworld .
+CMD ["./helloworld"]
